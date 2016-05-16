@@ -1,15 +1,19 @@
 from os.path import abspath, dirname, join
-
-from flask import flash, Flask, Markup, redirect, render_template, url_for, request
+from flask import flash, Flask, Markup, redirect, render_template, url_for, request, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.wtf import Form
 from wtforms import fields, validators
+import requests
+import random
+import json
+
+import httplib2
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 _cwd = dirname(abspath(__file__))
 SECRET_KEY = 'flask-session-insecure-secret-key'
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + join(_cwd, 'centralDatabase.db')
-SQLALCHEMY_ECHO = True
+#SQLALCHEMY_ECHO = True
 WTF_CSRF_SECRET_KEY = 'this-should-be-more-random'
 
 
@@ -17,6 +21,7 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 db = SQLAlchemy(app)
+
 
 
 class Sport(db.Model):
@@ -121,6 +126,35 @@ def add_player():
     return render_template("errors.html", form = form)
 
 
+
+@app.route("/randomPlayer", methods = ("POST", "GET"))
+def add_random_player():
+    form = PlayerForm()
+    helloJson = request()
+    player = Player()
+    player.name = helloJson['name']
+    player.birthdate = helloJson['birth_data']
+    player.height = helloJson['height']
+    player.weight = helloJson['weight'] 
+    becauseDebugging = random.randint(1,Team.query.count())
+    player.team_id = becauseDebugging
+    db.session.add(player)
+    db.session.commit()
+    flash("Random user " + player.name + " born on " + player.birthdate )
+    return redirect(url_for("index"))
+
+
+def request():
+    uri = 'http://api.namefake.com/'
+    try:
+        uResponse = requests.get(uri)
+    except requests.ConnectionError:
+        return "Error!"
+    Jresponse = uResponse.text
+    data = json.loads(Jresponse)        
+    return data
+
+
 _LINK = Markup('<a href="{url}">{name}</a>')
 
 @app.route("/viewData")
@@ -152,6 +186,11 @@ def view_teams(sport_id):
     data = query_to_list(query)
     data = [next(data)] + [[_make_link(cell) if i == 0 else cell for i, cell in enumerate(row)] for row in data]
     return render_template("data.html", data = data, type="Teams")
+
+@app.errorhandler(StopIteration)
+def emptyDatabase(error):
+    return render_template("errors.html", form = PlayerForm())
+
 
 def _make_link(id):
     url = url_for("view_players", team_id = id)

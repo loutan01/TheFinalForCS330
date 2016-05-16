@@ -3,6 +3,7 @@
 {%block title%}TEAM MANAGEMENT{% endblock %}
 {% block content %}
 {{ super() }}
+
 <form action = "/sport" method = "POST">
 <fieldset>
   <legend>Add a sport</legend>
@@ -24,6 +25,13 @@
   <legend>Add a player</legend>
   {{ forms.render(player_form) }}
   <p><input type = "Submit" value = "Save Player"></p>
+</fieldset>
+</form>
+
+<form action = "/randomPlayer" method = "POST">
+<fieldset>
+  <legend>Add a player</legend>
+  <p><input type = "Submit" value = "Get Random Player!"></p>
 </fieldset>
 </form>
 {% endblock content %}
