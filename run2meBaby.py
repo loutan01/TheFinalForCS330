@@ -6,7 +6,6 @@ from wtforms import fields, validators
 import requests
 import random
 import json
-
 import httplib2
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
@@ -53,9 +52,6 @@ class Player(db.Model):
     weight = db.Column(db.Integer)
 
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
-
-
-
 
 class GenForm(Form):
     sports = QuerySelectField(query_factory=Sport.query.all)
@@ -140,7 +136,7 @@ def add_random_player():
     player.team_id = becauseDebugging
     db.session.add(player)
     db.session.commit()
-    flash("Random user " + player.name + " born on " + player.birthdate )
+    flash("Random player " + player.name + " was born on " + player.birthdate )
     return redirect(url_for("index"))
 
 
@@ -161,10 +157,10 @@ _LINK = Markup('<a href="{url}">{name}</a>')
 def view_sports():
     query = Sport.query.filter(Sport.id >=0)
     data = query_to_list(query)
-    data = [next(data)] + [[_make_link2(cell) if i == 0 else cell for i, cell in enumerate(row)] for row in data]
+    data = [next(data)] + [[makeLink2(cell) if i == 0 else cell for i, cell in enumerate(row)] for row in data]
     return render_template("data.html", data=data, type="Sports")
 
-def _make_link2(id):
+def makeLink2(id):
     url = url_for("view_teams", sport_id=id)
     return _LINK.format(url=url, name=id)
 
@@ -184,15 +180,10 @@ def obj_to_list(sa_obj, field_order): #returns a list of data from a SQL object
 def view_teams(sport_id):
     query = Team.query.filter(Team.sport_id == sport_id)
     data = query_to_list(query)
-    data = [next(data)] + [[_make_link(cell) if i == 0 else cell for i, cell in enumerate(row)] for row in data]
+    data = [next(data)] + [[makeLink(cell) if i == 0 else cell for i, cell in enumerate(row)] for row in data]
     return render_template("data.html", data = data, type="Teams")
 
-@app.errorhandler(StopIteration)
-def emptyDatabase(error):
-    return render_template("errors.html", form = PlayerForm())
-
-
-def _make_link(id):
+def makeLink(id):
     url = url_for("view_players", team_id = id)
     return _LINK.format(url=url, name=id)
 
@@ -200,10 +191,25 @@ def _make_link(id):
 def view_players(team_id):
     query = Player.query.filter(Player.team_id == team_id)
     data = query_to_list(query)
-    data = [next(data)] + [[cell if i == 0 else cell for i, cell in enumerate(row)] for row in data]
+    data = [next(data)] + [[makeLink3(cell) if i == 0 else cell for i, cell in enumerate(row)] for row in data]
     return render_template("data.html", data = data, type="Players")
 
+def makeLink3(id):
+    url = url_for("remove_player", player_id = id)
+    return _LINK.format(url=url, name=id)
 
+@app.route("/removePlayer/<int:player_id>")
+def remove_player(player_id):
+    player = Player.query.get_or_404(player_id)
+    db.session.delete(player)
+    db.session.commit()
+    flash(player.name +  " deleted!")
+    return redirect(url_for("index"))
+
+
+@app.errorhandler(StopIteration)
+def emptyDatabase(error):
+    return render_template("errors.html", form = PlayerForm())
 
 if __name__ == "__main__":
     app.debug = True
