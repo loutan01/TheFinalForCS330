@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{%import "helpers/forms.html" as forms %}
+{%block title%}TEAM MANAGEMENT{% endblock %}
+{% block content %}
+{{ super() }}
+<form action = "/sport" method = "POST">
+<fieldset>
+  <legend>Add a sport</legend>
+  {{ forms.render(sport_form) }}
+  <p><input type = "Submit" value = "New Sport"></p>
+</fieldset>
+</form>
+
+<form action = "/team" method = "POST">
+<fieldset>
+  <legend>Add a team</legend>
+  {{ forms.render(team_form) }}
+  <p><input type = "Submit" value = "Save Team"></p>
+</fieldset>
+</form>
+
+<form action = "/player" method = "POST">
+<fieldset>
+  <legend>Add a player</legend>
+  {{ forms.render(player_form) }}
+  <p><input type = "Submit" value = "Save Player"></p>
+</fieldset>
+</form>
+{% endblock content %}
