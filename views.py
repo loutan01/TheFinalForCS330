@@ -1,3 +1,7 @@
+import sys
+import io
+from run4meBaby import *
+from database import db, Sport, Team, Player
 from os.path import abspath, dirname, join
 from flask import flash, Flask, Markup, redirect, render_template, url_for, request, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -9,56 +13,13 @@ import json
 import httplib2
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
-_cwd = dirname(abspath(__file__))
-SECRET_KEY = 'flask-session-insecure-secret-key'
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + join(_cwd, 'centralDatabase.db')
-#SQLALCHEMY_ECHO = True
-WTF_CSRF_SECRET_KEY = 'this-should-be-more-random'
 
 
-app = Flask(__name__)
-app.config.from_object(__name__)
-
-db = SQLAlchemy(app)
-
-
-
-class Sport(db.Model):
-    __tablename__ = 'sports'
-
-    id = db.Column(db.Integer, primary_key=True)
-    sport_name = db.Column(db.Unicode)
-    teams = db.relationship("Team", backref = "sports")
-
-
-
-class Team(db.Model):
-
-    __tablename__ = 'teams'
-
-    id = db.Column(db.Integer, primary_key=True)
-    team_name = db.Column(db.Unicode)
-    sport_id = db.Column(db.Integer, db.ForeignKey('sports.id'))
-    players = db.relationship("Player", backref = "teams")
-
-
-class Player(db.Model):
-    __tablename__ = 'players'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Unicode)
-    birthdate = db.Column(db.Unicode)
-    height = db.Column(db.Integer)
-    weight = db.Column(db.Integer)
-
-    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
 
 class GenForm(Form):
-    sports = QuerySelectField(query_factory=Sport.query.all)
+    sports = QuerySelectField(query_factory = Sport.query.all)
     teams = QuerySelectField(query_factory=Team.query.all)
     players = QuerySelectField(query_factory=Player.query.all)
-
-
 
 class TeamForm(Form):
     team_name = fields.StringField('Team', validators=[validators.required()])
@@ -207,14 +168,11 @@ def remove_player(player_id):
     return redirect(url_for("index"))
 
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+
 @app.errorhandler(StopIteration)
 def emptyDatabase(error):
     return render_template("errors.html", form = PlayerForm())
-
-if __name__ == "__main__":
-    app.debug = True
-    db.create_all()
-    app.run()
-
-
-

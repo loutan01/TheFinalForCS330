@@ -1,37 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
 {% extends "layout.html" %}
 {%import "helpers/forms.html" as forms %}
 {%block title%}TEAM MANAGEMENT{% endblock %}
 {% block content %}
 {{ super() }}
 
-<form action = "/sport" method = "POST">
-<fieldset>
-  <legend>Add a sport</legend>
-  {{ forms.render(sport_form) }}
-  <p><input type = "Submit" value = "New Sport"></p>
-</fieldset>
-</form>
 
-<form action = "/team" method = "POST">
-<fieldset>
-  <legend>Add a team</legend>
-  {{ forms.render(team_form) }}
-  <p><input type = "Submit" value = "Save Team"></p>
-</fieldset>
-</form>
 
-<form action = "/player" method = "POST">
-<fieldset>
-  <legend>Add a player</legend>
-  {{ forms.render(player_form) }}
-  <p><input type = "Submit" value = "Save Player"></p>
-</fieldset>
-</form>
 
-<form action = "/randomPlayer" method = "POST">
-<fieldset>
-  <legend>Add a RANDOM player</legend>
-  <p><input type = "Submit" value = "Get Random Player!"></p>
-</fieldset>
-</form>
-{% endblock content %}
+<head>
+    <title> Team Mangement App App</title>
+
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="presentation" class="active"><a href="/">Home</a>
+                    </li>
+                    <li role="presentation"><a href="/viewData">View all Data</a>
+                    </li>
+                    <li role="presentation"><a href="/about">About</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted"> Team Management App</h3>
+        </div>
+
+        <div class="jumbotron">
+        	<img src = "http://physicalculturist.ca/wp-content/uploads/2013/12/success.jpg" alt = "Gone!" />
+            <h1> Be The Winner Team </h1>
+            <p class="lead"></p>
+
+        </div>
+
+        <div class="row marketing">
+            <div class="col-lg-6">
+            <form action = "/sport" method = "POST">
+				<fieldset>
+				  <legend>Add a sport</legend>
+				  {{ forms.render(sport_form) }}
+				  <p><input type = "Submit" value = "New Sport"></p>
+				</fieldset>
+			</form>
+
+            </div>
+
+            <div class="col-lg-6">
+				<form action = "/team" method = "POST">
+					<fieldset>
+					  <legend>Add a team</legend>
+					    {{ forms.render(team_form) }}
+					  <p><input type = "Submit" value = "Save Team"></p>
+					</fieldset>
+				</form>
+            </div>
+        </div>
+
+        <div class="row marketing">
+            <div class="col-lg-6">
+             <form action = "/player" method = "POST">
+			<fieldset>
+ 				 <legend>Add a player</legend>
+				  {{ forms.render(player_form) }}
+				 <p><input type = "Submit" value = "Save Player"></p>
+			</fieldset>
+			</form>
+
+
+
+         <div class="col-lg-6">
+				<form action = "/randomPlayer" method = "POST">
+					<fieldset>
+ 						 <legend>Add a RANDOM player</legend>
+  			             <p><input type = "Submit" value = "Get Random Player!"></p>
+					</fieldset>
+				</form>
+				{% endblock content %}
+
+
+        <footer class="footer">
+            <p>&copy; Luther College 2016</p>
+        </footer>
+
+    </div>
+</body>
+
+</html>
