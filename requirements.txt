@@ -1,7 +1,7 @@
 appnope==0.1.0
 backports.shutil-get-terminal-size==1.0.0
 decorator==4.0.9
-Django==1.9.5
+Django==1.9.13
 django-jquery==1.12.2
 dominate==2.2.0
 Flask==0.12.3
@@ -23,7 +23,7 @@ pickleshare==0.7.2
 psycopg2==2.6.1
 ptyprocess==0.5.1
 python-dateutil==1.5
-requests==2.10.0
+requests==2.20.0
 simplegeneric==0.8.1
 six==1.10.0
 SQLAlchemy==1.0.13
